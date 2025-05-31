@@ -3,8 +3,8 @@ name = "body_by_jake"
 version = "0.1.0"
 description = "A PySpark project to learn Spark fundamentals"
 dependencies = [
-  "rich"
+  "pyspark",
+  "pandas",
+  "fastapi",
+  "random"
 ]
-
-[tool.uv]
-python = "3.11"
