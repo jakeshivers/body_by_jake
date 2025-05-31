@@ -1,0 +1,10 @@
+[project]
+name = "body_by_jake"
+version = "0.1.0"
+description = "A PySpark project to learn Spark fundamentals"
+dependencies = [
+  "rich"
+]
+
+[tool.uv]
+python = "3.11"
