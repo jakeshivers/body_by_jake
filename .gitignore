@@ -1,4 +1,7 @@
 .env
 .venv
+airflow/.env
+output
+jarsjars/*.jar
 output
 .tmp_dagster_home_jfm1u8z2
