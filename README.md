@@ -26,13 +26,13 @@ Generate and process realistic gym data across multiple verticals:
 - Normalize purchase SKUs
 - Parse timestamp fields into proper formats
 
-### Gold Layer: Business-ready aggregates
+### Gold Layer: Business-ready aggregates <br>
 - Daily active users
 - Revenue by product/class
 - Customer LTV
 - Churn cohort analysis
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack <br>
 
 | Layer         | Tools                                                                 |
 |---------------|-----------------------------------------------------------------------|
@@ -46,7 +46,7 @@ Generate and process realistic gym data across multiple verticals:
 | Observability | Great Expectations or Soda Core for validation                       |
 
 
-## 🐳 Docker/Kubernetes Setup
+## 🐳 Docker/Kubernetes Setup <br>
 - Docker to simulate local ingestion of data (e.g., REST API → Kafka → Spark job).
 - Use Docker Compose to run:
 - Kafka
@@ -55,12 +55,12 @@ Generate and process realistic gym data across multiple verticals:
 - A Spark cluster on K8s (with Spark Operator)
 - Simulated ingestion pipelines
 
-## 📊 ML/Analytics Add-On (Post-Core Build)
+## 📊 ML/Analytics Add-On (Post-Core Build) <br>
 - Predict churn risk using logistic regression on class attendance + purchase data
 - Recommend classes or products using collaborative filtering
 - Forecast weekly supplement sales with time series modeling (Prophet or Spark ML)
 
-## 📝 Deliverables (for GitHub & Interview Portfolio)
+## 📝 Deliverables <br>
 - README.md with architecture diagram and walkthrough
 - Terraform or shell script to set up cloud infra (if using AWS S3 + Databricks)
 - Docker Compose file or K8s manifest for local simulation
@@ -69,7 +69,7 @@ Generate and process realistic gym data across multiple verticals:
 - .yml workflows for GitHub Actions
 - Synthetic data generator in /data_gen using Faker
 
-## 💥 Why I'm doing this project
+## 💥 Why I'm doing this project <br>
 - Combines big data ingestion + structured transformations + ML readiness
 - Uses open-source tools and cloud-native patterns
 - Simulates real business use cases (churn, LTV, DAUs)
