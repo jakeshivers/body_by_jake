@@ -3,4 +3,4 @@
 airflow/.env
 output
 
-jars
+jarsjars/*.jar
