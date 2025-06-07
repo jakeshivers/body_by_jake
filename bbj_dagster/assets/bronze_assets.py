@@ -1,5 +1,4 @@
 import os
-from dagster import asset, AssetMaterialization, DailyPartitionsDefinition, Output
 from pyspark.sql.functions import to_date, col
 from src.spark_session import get_spark
 from src.write_delta import write_partitioned_delta
@@ -8,63 +7,100 @@ from generate_data.generate_checkins import generate_checkins_df
 from generate_data.generate_facility_usage import generate_facility_usage_df
 from generate_data.generate_cancellations import generate_cancellations_df
 from generate_data.generate_retail import generate_retail_df
-
-DAILY_PARTITIONS = DailyPartitionsDefinition(start_date="2025-06-01")
-BRONZE_PATH = "s3a://bbj-lakehouse/bronze"
+from bbj_dagster.utils.bronze_utils import bronze_asset_op
+from bbj_dagster.config.constants import BRONZE_PATH, DAILY_PARTITIONS
+from dagster import (
+                    asset, 
+                    AssetMaterialization, 
+                    AssetExecutionContext,
+                    Output
+                )
 
 @asset(partitions_def=DAILY_PARTITIONS)
-def checkins_bronze():
+def checkins_bronze(context: AssetExecutionContext):
     spark = get_spark("checkins_bronze")
     df = generate_checkins_df(spark)
-
-    df = df.withColumn("checkin_date", to_date(df["timestamp"]))
-    write_partitioned_delta(
-            df, f"{BRONZE_PATH}/checkins", 
-            partition_col="checkin_date",
-            asset_name="checkins"
+        
+    df = bronze_asset_op(
+            spark=spark, 
+            df=df, 
+            asset_name="checkins", 
+            partition_col="timestamp",
     )
 
-    # These need to happen before spark.stop()
     yield AssetMaterialization(asset_key="checkins_bronze", metadata={"row_count": df.count()})
     yield Output(None)
-
-    # ✅ Move this down here
     spark.stop()
 
-    # Success marker
-    success_path = f"./tmp/success/checkins/_SUCCESS"
-    os.makedirs(os.path.dirname(success_path), exist_ok=True)
-    try:
-        with open(success_path, "w") as f:
-            f.write("success")
-        print(f"✅ _SUCCESS written to {success_path}")
-    except PermissionError as e:
-        print(f"⚠️ WARNING: Could not write _SUCCESS marker: {e}")
-
-@asset
-def members_bronze():
-    spark = get_spark("bronze_members")
+@asset(partitions_def=DAILY_PARTITIONS)
+def members_bronze(context: AssetExecutionContext):
+    spark = get_spark("members_bronze")
     df = generate_members_df(spark)
-    write_partitioned_delta(df, f"{BRONZE_PATH}/members", partition_by="plan")
+    partition_value = context.partition_key
+    df = generate_checkins_df(spark)
+    partition_value = context.partition_key
+    
+    df = bronze_asset_op(
+            spark=spark, 
+            df=df, 
+            asset_name="members", 
+            partition_col="timestamp",
+    )
+    yield AssetMaterialization(asset_key="members_bronze", metadata={"row_count": df.count()})
+    yield Output(None)
     spark.stop()
 
-@asset
-def facility_usage_bronze():
-    spark = get_spark("facility_usage")
+@asset(partitions_def=DAILY_PARTITIONS)
+def facility_usage_bronze(context: AssetExecutionContext):
+    spark = get_spark("facility_usage_bronze")
     df = generate_facility_usage_df(spark)
-    write_partitioned_delta(df, f"{BRONZE_PATH}/facility_usage", partition_by="facility")
+    partition_value = context.partition_key
+    df = generate_checkins_df(spark)
+    partition_value = context.partition_key
+    
+    df = bronze_asset_op(
+            spark=spark, 
+            df=df, 
+            asset_name="facility_usage", 
+            partition_col="timestamp",
+    )
+
+    yield AssetMaterialization(asset_key="facility_usage_bronze", metadata={"row_count": df.count()})
+    yield Output(None)
     spark.stop()
 
-@asset
-def cancellations_bronze():
-    spark = get_spark("cancellations")
+@asset(partitions_def=DAILY_PARTITIONS)
+def cancellations_bronze(context: AssetExecutionContext):
+    spark = get_spark("cancellations_bronze")
     df = generate_cancellations_df(spark)
-    write_partitioned_delta(df, f"{BRONZE_PATH}/cancellations", partition_by="reason")
+    partition_value = context.partition_key
+    
+    df = bronze_asset_op(
+            spark=spark, 
+            df=df, 
+            asset_name="cancellations", 
+            partition_col="timestamp",
+    )
+
+    yield AssetMaterialization(asset_key="cancellations_bronze", metadata={"row_count": df.count()})
+    yield Output(None)
     spark.stop()
 
-@asset
-def retail_bronze():
-    spark = get_spark("retail")
+@asset(partitions_def=DAILY_PARTITIONS)
+def retail_bronze(context: AssetExecutionContext):
+    spark = get_spark("retail_bronze")
     df = generate_retail_df(spark)
-    write_partitioned_delta(df, f"{BRONZE_PATH}/retail", partition_by="product_name")
+    
+    df = generate_checkins_df(spark)
+    partition_value = context.partition_key
+    
+    df = bronze_asset_op(
+            spark=spark, 
+            df=df, 
+            asset_name="retail", 
+            partition_col="timestamp",
+    )
+
+    yield AssetMaterialization(asset_key="retail_bronze", metadata={"row_count": df.count()})
+    yield Output(None)
     spark.stop()
