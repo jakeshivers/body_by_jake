@@ -1,35 +1,51 @@
-from dagster import asset
+import os
+from dagster import asset, AssetMaterialization, DailyPartitionsDefinition, Output
+from pyspark.sql.functions import to_date, col
 from src.spark_session import get_spark
+from src.write_delta import write_partitioned_delta
 from generate_data.generate_members import generate_members_df
 from generate_data.generate_checkins import generate_checkins_df
 from generate_data.generate_facility_usage import generate_facility_usage_df
 from generate_data.generate_cancellations import generate_cancellations_df
 from generate_data.generate_retail import generate_retail_df
 
+DAILY_PARTITIONS = DailyPartitionsDefinition(start_date="2025-06-01")
 BRONZE_PATH = "s3a://bbj-lakehouse/bronze"
 
-def write_partitioned_delta(df, path, partition_by=None):
-    writer = df.write.format("delta") \
-        .mode("overwrite") \
-        .option("overwriteSchema", "true")
+@asset(partitions_def=DAILY_PARTITIONS)
+def checkins_bronze():
+    spark = get_spark("checkins_bronze")
+    df = generate_checkins_df(spark)
 
-    if partition_by:
-        writer = writer.partitionBy(partition_by)
+    df = df.withColumn("checkin_date", to_date(df["timestamp"]))
+    write_partitioned_delta(
+            df, f"{BRONZE_PATH}/checkins", 
+            partition_col="checkin_date",
+            asset_name="checkins"
+    )
 
-    writer.save(path)
+    # These need to happen before spark.stop()
+    yield AssetMaterialization(asset_key="checkins_bronze", metadata={"row_count": df.count()})
+    yield Output(None)
+
+    # ✅ Move this down here
+    spark.stop()
+
+    # Success marker
+    success_path = f"./tmp/success/checkins/_SUCCESS"
+    os.makedirs(os.path.dirname(success_path), exist_ok=True)
+    try:
+        with open(success_path, "w") as f:
+            f.write("success")
+        print(f"✅ _SUCCESS written to {success_path}")
+    except PermissionError as e:
+        print(f"⚠️ WARNING: Could not write _SUCCESS marker: {e}")
 
 @asset
 def members_bronze():
     spark = get_spark("bronze_members")
     df = generate_members_df(spark)
     write_partitioned_delta(df, f"{BRONZE_PATH}/members", partition_by="plan")
-    spark.stop()
-
-@asset
-def checkins_bronze():
-    spark = get_spark("bronze_checkins")
-    df = generate_checkins_df(spark)
-    write_partitioned_delta(df, f"{BRONZE_PATH}/checkins", partition_by="class_name")
     spark.stop()
 
 @asset
