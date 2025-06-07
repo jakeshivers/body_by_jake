@@ -1,10 +1,4 @@
-[project]
-name = "body_by_jake"
-version = "0.1.0"
-description = "A PySpark project to learn Spark fundamentals"
-dependencies = [
-  "pyspark",
-  "pandas",
-  "fastapi",
-  "random"
-]
+[tool.dagster]
+module_name = "bbj_dagster"
+code_location_name = "bbj_dagster"
+working_directory = "."
