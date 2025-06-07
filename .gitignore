@@ -4,6 +4,7 @@ output
 jarsjars/*.jar
 output
 .tmp*
+/tmp*
 *.pyc
-*__pycache__
-
+*__pycache__*
+ generate_data/__pycache__/

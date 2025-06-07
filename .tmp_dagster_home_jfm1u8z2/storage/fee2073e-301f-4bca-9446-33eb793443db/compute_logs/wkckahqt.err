@@ -1,32 +1,0 @@
-[32m2025-06-04 16:41:00 -0600[0m - dagster - [34mDEBUG[0m - bronze_job - fee2073e-301f-4bca-9446-33eb793443db - 1920815 - LOGS_CAPTURED - Started capturing logs in process (pid: 1920815).
-[32m2025-06-04 16:41:00 -0600[0m - dagster - [34mDEBUG[0m - bronze_job - fee2073e-301f-4bca-9446-33eb793443db - 1920815 - retail_bronze - STEP_START - Started execution of step "retail_bronze".
-25/06/04 16:41:03 WARN Utils: Your hostname, engineer resolves to a loopback address: 127.0.1.1; using 192.168.0.216 instead (on interface wlp1s0)
-25/06/04 16:41:03 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
-25/06/04 16:41:04 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
-Setting default log level to "WARN".
-To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
-25/06/04 16:41:06 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
-25/06/04 16:41:06 WARN Utils: Service 'SparkUI' could not bind on port 4041. Attempting port 4042.
-25/06/04 16:41:06 WARN Utils: Service 'SparkUI' could not bind on port 4042. Attempting port 4043.
-[Stage 0:>                                                         (0 + 0) / 16][Stage 0:>                                                        (0 + 13) / 16][Stage 0:>                                                        (0 + 16) / 16][Stage 0:===>                                                     (1 + 15) / 16][Stage 0:===================================>                     (10 + 6) / 16][Stage 0:==========================================>              (12 + 4) / 16][Stage 0:==============================================>          (13 + 3) / 16][Stage 0:=================================================>       (14 + 2) / 16][Stage 0:=====================================================>   (15 + 1) / 16]                                                                                [32m2025-06-04 16:42:34 -0600[0m - dagster - [34mDEBUG[0m - bronze_job - fee2073e-301f-4bca-9446-33eb793443db - 1920815 - retail_bronze - STEP_OUTPUT - Yielded output "result" of type "Any". (Type check passed).
-[32m2025-06-04 16:42:34 -0600[0m - dagster - [34mDEBUG[0m - bronze_job - fee2073e-301f-4bca-9446-33eb793443db - retail_bronze - Writing file at: /home/jake/dev/body_by_jake/.tmp_dagster_home_jfm1u8z2/storage/retail_bronze using PickledObjectFilesystemIOManager...
-[32m2025-06-04 16:42:34 -0600[0m - dagster - [34mERROR[0m - [31mbronze_job - fee2073e-301f-4bca-9446-33eb793443db - 1920815 - retail_bronze - STEP_FAILURE - Execution of step "retail_bronze" failed.
-
-dagster._core.errors.DagsterExecutionHandleOutputError: Error occurred while handling output "result" of step "retail_bronze"::
-
-pyspark.errors.exceptions.base.PySparkRuntimeError: [CONTEXT_ONLY_VALID_ON_DRIVER] It appears that you are attempting to reference SparkContext from a broadcast variable, action, or transformation. SparkContext can only be used on the driver, not in code that it run on workers. For more information, see SPARK-5063.
-
-Stack Trace:
-  File "/home/jake/dev/body_by_jake/.venv/lib/python3.10/site-packages/dagster/_core/execution/plan/utils.py", line 56, in op_execution_error_boundary
-    yield
-  File "/home/jake/dev/body_by_jake/.venv/lib/python3.10/site-packages/dagster/_utils/__init__.py", line 392, in iterate_with_context
-    next_output = next(iterator)
-  File "/home/jake/dev/body_by_jake/.venv/lib/python3.10/site-packages/dagster/_core/execution/plan/execute_step.py", line 773, in _gen_fn
-    gen_output = output_manager.handle_output(output_context, output.value)
-  File "/home/jake/dev/body_by_jake/.venv/lib/python3.10/site-packages/dagster/_core/storage/upath_io_manager.py", line 448, in handle_output
-    self.dump_to_path(context=context, obj=obj, path=path)
-  File "/home/jake/dev/body_by_jake/.venv/lib/python3.10/site-packages/dagster/_core/storage/fs_io_manager.py", line 261, in dump_to_path
-    pickle.dump(obj, file, PICKLE_PROTOCOL)
-  File "/home/jake/dev/body_by_jake/.venv/lib/python3.10/site-packages/pyspark/context.py", line 466, in __getnewargs__
-    raise PySparkRuntimeError(
-[0m
