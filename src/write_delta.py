@@ -13,7 +13,7 @@ def write_partitioned_delta(df: DataFrame, path: str, partition_col: str, asset_
     print("✅ Delta write complete. Proceeding to _SUCCESS marker...")
 
     if asset_name:
-        local_path = path.replace("s3a://bbj-lakehouse", "/mnt/data/minio")
+        # local_path = path.replace("s3a://bbj-lakehouse", "/mnt/data/minio")
         success_path = f"./tmp/success/{asset_name}/_SUCCESS"
         os.makedirs(os.path.dirname(success_path), exist_ok=True)
         try:

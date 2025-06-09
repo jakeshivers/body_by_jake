@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import expr, year, month
+from pyspark.sql.functions import year, month
 from delta import configure_spark_with_delta_pip
 
 builder = SparkSession.builder \

@@ -1,5 +1,4 @@
 from pyspark.sql import SparkSession
-from delta import configure_spark_with_delta_pip
 
 builder = SparkSession.builder \
     .appName("GenTest") \
