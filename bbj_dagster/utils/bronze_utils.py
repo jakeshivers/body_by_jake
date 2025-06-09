@@ -2,7 +2,7 @@ from bbj_dagster.config.constants import BRONZE_PATH, get_success_path
 from pyspark.sql.functions import to_date
 import os
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import to_date, lit
+from pyspark.sql.functions import lit
 
 def bronze_asset_op(spark, df, asset_name: str, partition_col: str):
     from pyspark.sql.functions import to_date

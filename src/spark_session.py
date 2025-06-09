@@ -1,5 +1,4 @@
 from pyspark.sql import SparkSession
-import os
 
 def get_spark(app_name="BodyByJake"):
     builder = SparkSession.builder \

@@ -9,7 +9,8 @@ def generate_retail_df(spark):
         ("Electrolyte Mix", 1.99),
         ("Gym Shirt", 24.99),
         ("Gym Shorts", 29.99),
-        ("Whey Protein", 39.99)
+        ("Whey Protein", 39.99),
+        ("Sticker", 1.00)
     ]
 
     product_expr = ",".join(

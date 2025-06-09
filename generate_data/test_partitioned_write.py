@@ -1,6 +1,5 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import current_date
-import os
 
 def get_spark(app_name="partition_test"):
     return (
