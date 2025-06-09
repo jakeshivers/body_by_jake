@@ -19,14 +19,15 @@ Generate and process realistic gym data across multiple verticals:
 ## 🧱 Architecture Overview
 ### Bronze Layer: Raw data in Parquet format, partitioned by date <br>
 - Ingested via PySpark scripts on Databricks
-- Simulate real-time ingestion using Kafka or Auto Loader
+- Generated 1M+ of records with Python's Faker library
 
 ### Silver Layer: Cleaned and normalized tables <br>
 - Deduplicate class check-ins
 - Normalize purchase SKUs
 - Parse timestamp fields into proper formats
+- Clean out activity that occured prior to Membership creation date
 
-### Gold Layer: Business-ready aggregates <br>
+### WIP: Gold Layer: Business-ready aggregates <br>
 - Daily active users
 - Revenue by product/class
 - Customer LTV
@@ -37,30 +38,29 @@ Generate and process realistic gym data across multiple verticals:
 | Layer         | Tools                                                                 |
 |---------------|-----------------------------------------------------------------------|
 | Ingestion     | PySpark (streaming or batch), Databricks Auto Loader                 |
-| Storage       | Delta Lake (on S3 or DBFS)                                            |
-| Transform     | PySpark + Databricks Notebooks                                        |
-| Model Orchestration | Databricks Workflows, or optionally Airflow                    |
-| ML Prep       | MLflow for model tracking, scikit-learn or Spark MLlib               |
-| Infra         | Docker for local dev, Kubernetes for scalable ingestion jobs         |
-| CI/CD         | GitHub Actions for deployment of ETL pipelines                       |
-| Observability | Great Expectations or Soda Core for validation                       |
+| Storage       | Delta Lake (MinIO)                                                   |
+| Transform     | PySpark +                                                            |
+| Model Orchestration | Dagster                                                        |
+| WIP: ML Prep  | MLflow for model tracking, scikit-learn or Spark MLlib               |
+| Infra         | Docker                                                               |
+| WIP: CI/CD         | GitHub Actions for deployment of ETL pipelines                  |
+| WIP: Observability | Great Expectations or Soda Core for validation                  |
 
 
-## 🐳 Docker/Kubernetes Setup <br>
+## 🐳 Docker <br>
 - Docker to simulate local ingestion of data (e.g., REST API → Kafka → Spark job).
 - Use Docker Compose to run:
-- Kafka
 - Jupyter/PySpark container
 - Set up Minikube or Kind to run:
 - A Spark cluster on K8s (with Spark Operator)
 - Simulated ingestion pipelines
 
-## 📊 ML/Analytics Add-On (Post-Core Build) <br>
+## 📊 WIP: ML/Analytics Add-On (Post-Core Build) <br>
 - Predict churn risk using logistic regression on class attendance + purchase data
 - Recommend classes or products using collaborative filtering
 - Forecast weekly supplement sales with time series modeling (Prophet or Spark ML)
 
-## 📝 Deliverables <br>
+## 📝 WIP: Deliverables <br>
 - README.md with architecture diagram and walkthrough
 - Terraform or shell script to set up cloud infra (if using AWS S3 + Databricks)
 - Docker Compose file or K8s manifest for local simulation

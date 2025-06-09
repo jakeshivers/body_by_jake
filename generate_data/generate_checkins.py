@@ -10,7 +10,7 @@ def generate_checkins_df(spark):
         .withColumn("member_id", (rand() * 1_000_000).cast("int")) \
         .withColumn("class_name", expr(f"element_at(array({class_expr_values}), int(rand() * {len(class_list)}) + 1)")) \
         .withColumn("duration_mins", (rand() * 60 + 20).cast("int")) \
-        .withColumn("days_offset", floor(rand() * 365).cast("int")) \
+        .withColumn("days_offset", floor(rand() * 100).cast("int")) \
         .withColumn("timestamp", date_sub(current_date(), col("days_offset")))
 
     return df
