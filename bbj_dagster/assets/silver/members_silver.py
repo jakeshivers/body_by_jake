@@ -8,7 +8,7 @@ from src.spark_session import get_spark
 
 action = 'members'
 
-@asset(deps=[f"{action}_bronze"])
+@asset(deps=[f"{action}_bronze"], group_name="silver")
 @with_logger()
 def members_silver():
     logger = get_logger(f"{action}_silver")

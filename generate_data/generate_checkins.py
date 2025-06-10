@@ -4,7 +4,7 @@ class_list = ["Yoga", "Spin", "Stretch", "Peleton", "Aerobics"]
 class_expr_values = ",".join([f"'{c}'" for c in class_list])
 
 def generate_checkins_df(spark):
-    N = 20 #_000_000
+    N = 20_000_000
 
     df = spark.range(1, N + 1).toDF("checkin_id") \
         .withColumn("member_id", (rand() * 1_000_000).cast("int")) \

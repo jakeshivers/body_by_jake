@@ -17,7 +17,7 @@ def generate_cancellations_df(spark):
 
     df = spark.range(1, N + 1).toDF("cancel_id") \
         .withColumn("member_id", (rand() * 1_000_000).cast("int")) \
-        .withColumn("days_offset", (floor(rand() * 365)).cast("int")) \
+        .withColumn("days_offset", (floor(rand() * 100)).cast("int")) \
         .withColumn("timestamp", date_sub(current_date(), col("days_offset"))) \
         .withColumn("reason", expr(f"element_at(array({reason_expr}), int(rand() * {len(reasons)}) + 1)"))
 

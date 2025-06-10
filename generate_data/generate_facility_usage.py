@@ -8,7 +8,7 @@ def generate_facility_usage_df(spark):
     df = spark.range(1, N + 1).toDF("usage_id") \
         .withColumn("member_id", (rand() * 1_000_000).cast("int")) \
         .withColumn("duration_mins", (rand() * 80 + 10).cast("int")) \
-        .withColumn("days_offset", (floor(rand() * 365)).cast("int")) \
+        .withColumn("days_offset", (floor(rand() * 100)).cast("int")) \
         .withColumn("timestamp", date_sub(current_date(), col("days_offset"))) \
         .withColumn("facility", expr(f"element_at(array({facility_expr}), int(rand() * {len(facilities)}) + 1)"))
 
