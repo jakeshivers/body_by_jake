@@ -13,7 +13,7 @@ from dagster import (
                     Output
                 )
 
-@asset(partitions_def=DAILY_PARTITIONS)
+@asset(partitions_def=DAILY_PARTITIONS, group_name="bronze")
 def checkins_bronze(context: AssetExecutionContext):
     spark = get_spark("checkins_bronze")
     df = generate_checkins_df(spark)
@@ -29,7 +29,7 @@ def checkins_bronze(context: AssetExecutionContext):
     yield Output(None)
     spark.stop()
 
-@asset(partitions_def=DAILY_PARTITIONS)
+@asset(partitions_def=DAILY_PARTITIONS, group_name="bronze")
 def members_bronze(context: AssetExecutionContext):
     spark = get_spark("members_bronze")
     df = generate_members_df(spark)
@@ -44,7 +44,7 @@ def members_bronze(context: AssetExecutionContext):
     yield Output(None)
     spark.stop()
 
-@asset(partitions_def=DAILY_PARTITIONS)
+@asset(partitions_def=DAILY_PARTITIONS, group_name="bronze")
 def facility_usage_bronze(context: AssetExecutionContext):
     spark = get_spark("facility_usage_bronze")
     df = generate_facility_usage_df(spark)
@@ -60,7 +60,7 @@ def facility_usage_bronze(context: AssetExecutionContext):
     yield Output(None)
     spark.stop()
 
-@asset(partitions_def=DAILY_PARTITIONS)
+@asset(partitions_def=DAILY_PARTITIONS, group_name="bronze")
 def cancellations_bronze(context: AssetExecutionContext):
     spark = get_spark("cancellations_bronze")
     df = generate_cancellations_df(spark)
@@ -76,7 +76,7 @@ def cancellations_bronze(context: AssetExecutionContext):
     yield Output(None)
     spark.stop()
 
-@asset(partitions_def=DAILY_PARTITIONS)
+@asset(partitions_def=DAILY_PARTITIONS, group_name="bronze")
 def retail_bronze(context: AssetExecutionContext):
     spark = get_spark("retail_bronze")
 
