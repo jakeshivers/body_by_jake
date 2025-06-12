@@ -4,11 +4,16 @@ from pyspark.sql import DataFrame
 def write_partitioned_delta(df: DataFrame, path: str, partition_col: str, asset_name: str):
     print(f"💾 Writing partitioned Delta to {path} on {partition_col}...")
 
-    df.write.format("delta") \
-        .mode("overwrite") \
-        .partitionBy(partition_col) \
-        .option("mergeSchema", "true") \
-        .save(path)
+    # df.write.format("delta") \
+    #     .mode("overwrite") \
+    #     .partitionBy(partition_col) \
+    #     .option("mergeSchema", "true") \
+    #     .save(path)
+
+    df.write \
+    .mode("overwrite") \
+    .partitionBy(partition_col) \
+    .parquet(path)
 
     print("✅ Delta write complete. Proceeding to _SUCCESS marker...")
 

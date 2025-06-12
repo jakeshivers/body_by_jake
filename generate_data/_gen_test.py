@@ -29,7 +29,13 @@ print(f"Count: {df.count()}")
 
 
 try:
-    df.write.format("delta").mode("overwrite").save("s3a://bbj-lakehouse/bronze/members")
+    df.write
+    .format("delta")
+    .mode("overwrite")
+    .save("s3a://bbj-lakehouse/bronze/members")
+
+
+    
     print("✅ Write succeeded")
 except Exception as e:
     print(f"❌ Write failed: {e}")
