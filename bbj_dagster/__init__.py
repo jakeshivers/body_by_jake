@@ -27,6 +27,6 @@ defs = Definitions(
         #gold
         *gold_assets
     ],
-    jobs=[bronze_job, silver_job, gold_job],
+    jobs=[bronze_job, silver_job],
     schedules=[bronze_daily_schedule],  #only have a bronze job for now. Silver should be a dependency 
 )

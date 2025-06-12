@@ -8,9 +8,9 @@ from bbj_dagster.config.constants import SILVER_PATH, GOLD_PATH
 
 action = 'most_popular_amenities_over_time'
 
-@asset(deps=["checkins"], group_name="gold")
 @with_logger()
-def most_popular_amenities() -> None:
+@asset( group_name="gold")
+def most_popular_amenities_gold() -> None:
     logger = get_logger(f"{action}_gold")
 
     spark = get_spark("gold_most_popular_amenities_over_time")

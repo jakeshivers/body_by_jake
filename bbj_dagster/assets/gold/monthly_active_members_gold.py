@@ -2,15 +2,15 @@
 
 from dagster import asset
 from pyspark.sql.functions import col, countDistinct, month
-from bbj_dagster.utils.logger import get_logger, with_logger
+from bbj_dagster.utils.logger import with_logger
 from src.spark_session import get_spark
 from bbj_dagster.config.constants import SILVER_PATH, GOLD_PATH
 
 action = 'monthly_active_users'
 
-@asset(deps=[f"checkins"], group_name="gold")
 @with_logger()
-def monthly_active_members() -> None:
+@asset(group_name="gold")
+def monthly_active_members_gold() -> None:
     logger = get_logger(f"{action}_gold")
 
     spark = get_spark("gold_monthly_active_members")

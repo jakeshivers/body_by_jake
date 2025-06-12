@@ -3,17 +3,23 @@ from pyspark.sql.functions import (
     col, min as _min, max as _max, countDistinct, count,
     when, dayofweek, datediff, current_date, round
 )
-from bbj_dagster.utils.logger import with_logger
+from bbj_dagster.utils.logger import with_logger, get_logger
 from bbj_dagster.config.constants import SILVER_PATH, GOLD_PATH, get_success_path
 from src.spark_session import get_spark
-
+from dagster import (
+                    asset, 
+                    AssetMaterialization, 
+                    AssetExecutionContext,
+                    Output
+                )
 spark = get_spark("checkin_behavior_gold")
 
 
-@asset(deps=["checkins_silver"], group_name="gold")
-@with_logger
+@with_logger()
+@asset( group_name="gold")
 def checkin_behavior_gold(context):
     df = spark.read.parquet(f"{SILVER_PATH}/checkins_silver")
+    logger = get_logger("checkin_behavior_gold")
 
     # 1 = Sunday, 7 = Saturday in Spark dayofweek
     enriched = (

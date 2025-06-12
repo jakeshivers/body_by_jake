@@ -1,4 +1,4 @@
-# bbj_dagster/utils/logger.py
+# utils/logger.py
 
 import logging
 import sys
@@ -18,18 +18,17 @@ def get_logger(name: str = "bbj") -> logging.Logger:
     return logger
 
 def with_logger(logger_name=None):
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            name = logger_name or func.__name__
-            logger = get_logger(name)
-            logger.info(f"Running `{func.__name__}`")
+    def decorator(inner_fn):  # 👈 Avoid names like func or wrap_func
+        @functools.wraps(inner_fn)
+        def logged_fn(*args, **kwargs):  # 👈 Avoid any names that look like DAG assets
+            logger = get_logger(logger_name or inner_fn.__name__)
+            logger.info(f"Running `{inner_fn.__name__}`")
             try:
-                result = func(*args, **kwargs)
-                logger.info(f"`{func.__name__}` completed successfully")
+                result = inner_fn(*args, **kwargs)
+                logger.info(f"`{inner_fn.__name__}` completed successfully")
                 return result
             except Exception as e:
-                logger.exception(f"Error in `{func.__name__}`: {e}")
+                logger.exception(f"Error in `{inner_fn.__name__}`: {e}")
                 raise
-        return wrapper
+        return logged_fn
     return decorator

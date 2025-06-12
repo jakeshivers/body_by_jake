@@ -5,13 +5,13 @@ from bbj_dagster.config.constants import SILVER_PATH, GOLD_PATH, get_success_pat
 from src.spark_session import get_spark
 
 spark = get_spark("facility_usage_by_demo_gold")
-action = 'facility_usage'
 
-@asset(deps=["facility_usage_silver", "members_silver"], group_name="gold")
-@with_logger
+@with_logger()
+@asset(group_name="gold")
 def facility_usage_by_demo_gold(context):
     usage_df = spark.read.parquet(f"{SILVER_PATH}/facility_usage_silver")
     members_df = spark.read.parquet(f"{SILVER_PATH}/members_silver")
+    logger = get_logger("facility_usage_by_demo_gold")
 
     enriched = (
         usage_df.join(members_df, on="member_id", how="left")

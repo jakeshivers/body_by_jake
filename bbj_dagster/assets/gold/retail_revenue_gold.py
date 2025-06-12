@@ -6,8 +6,8 @@ from src.spark_session import get_spark
 
 spark = get_spark("retail_gold")
 
-@asset(deps=["retail_silver"], group_name="gold")
-@with_logger
+@asset(group_name="gold")
+@with_logger()
 def retail_revenue_gold(context):
     df = spark.read.parquet(f"{SILVER_PATH}/retail_silver")
     df = df.withColumn("purchase_date", to_date("timestamp"))

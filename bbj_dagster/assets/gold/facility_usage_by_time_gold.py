@@ -7,14 +7,14 @@ from src.spark_session import get_spark
 spark = get_spark("facility_usage_by_time_gold")
 action = 'facility_usge_by_time'
 
-@asset(deps=["facility_usage_silver"], group_name="gold")
-@with_logger
+@with_logger()
+@asset(group_name="gold")
 def facility_usage_by_time_gold(context):
     usage_df = spark.read.parquet(f"{SILVER_PATH}/facility_usage_silver")
+    logger = get_logger("facility_usage_by_demo_gold")
 
     # If usage_date is DATE type, you'll need to cast it to timestamp with a default time
     # usage_df = usage_df.withColumn("usage_ts", to_timestamp("usage_date"))
-
     enriched = (
         usage_df
         .withColumn("day_of_week", date_format("usage_date", "EEEE"))  # e.g., Monday

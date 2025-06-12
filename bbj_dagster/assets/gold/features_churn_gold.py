@@ -7,8 +7,8 @@ from src.spark_session import get_spark
 spark = get_spark("features_churn_gold")
 action = 'features_churn'
 
-@asset(deps=["members_silver", "member_retention", "checkin_behavior"], group_name="gold")
 @with_logger
+@asset( group_name="gold")
 def features_churn_gold(context):
     members_df = spark.read.parquet(f"{SILVER_PATH}/members_silver")
     retention_df = spark.read.parquet(f"{GOLD_PATH}/member_retention")
