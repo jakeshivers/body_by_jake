@@ -8,7 +8,6 @@ from bbj_dagster.config.constants import SILVER_PATH, GOLD_PATH
 
 action = 'monthly_active_users'
 
-@with_logger()
 @asset(group_name="gold")
 def monthly_active_members_gold() -> None:
     logger = get_logger(f"{action}_gold")
@@ -25,3 +24,4 @@ def monthly_active_members_gold() -> None:
 
     logger.info("Writing gold/monthly_active_members")
     result.write.mode("overwrite").parquet(F"{GOLD_PATH}/monthly_active_members")
+    context.log.info("Wrote MAM_behavior gold model + _SUCCESS marker.")

@@ -7,7 +7,6 @@ from src.spark_session import get_spark
 spark = get_spark("member_retention_gold")
 action = 'member_retention'
 
-@with_logger()
 @asset(group_name="gold")
 def membership_retention_gold(context):
     members_df = spark.read.parquet(f"{SILVER_PATH}/members_silver")

@@ -16,17 +16,13 @@ from bbj_dagster.assets.silver import assets as silver_assets
 #gold
 from bbj_dagster.assets.gold import assets as gold_assets
 
-defs = Definitions(
-    assets=[
-        #bronze
-        *bronze_assets,
+all_assets = bronze_assets + silver_assets + gold_assets
 
-        #silver
-        *silver_assets,
-        
-        #gold
-        *gold_assets
-    ],
-    jobs=[bronze_job, silver_job],
-    schedules=[bronze_daily_schedule],  #only have a bronze job for now. Silver should be a dependency 
-)
+for i, a in enumerate(all_assets):
+    print(f"[DEBUG] Asset {i}: {a} ({type(a)})")
+
+defs = Definitions(
+        assets=all_assets,
+        jobs=[bronze_job, silver_job, gold_job],
+        schedules=[bronze_daily_schedule],  #only have a bronze job for now. Silver should be a dependency 
+ )

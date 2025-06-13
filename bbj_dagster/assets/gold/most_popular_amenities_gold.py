@@ -8,7 +8,6 @@ from bbj_dagster.config.constants import SILVER_PATH, GOLD_PATH
 
 action = 'most_popular_amenities_over_time'
 
-@with_logger()
 @asset( group_name="gold")
 def most_popular_amenities_gold() -> None:
     logger = get_logger(f"{action}_gold")
@@ -25,3 +24,4 @@ def most_popular_amenities_gold() -> None:
 
     logger.info("Writing gold/most_popular_amenities")
     result.write.mode("overwrite").parquet(F"{GOLD_PATH}/most_popular_amenities_over_time")
+    context.log.info("Wrote MAM_behavior gold model + _SUCCESS marker.")

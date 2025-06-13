@@ -7,7 +7,6 @@ from src.spark_session import get_spark
 spark = get_spark("retail_revenue_by_demo_gold")
 action = 'retail_revenue_by_demo'
 
-@with_logger()
 @asset(group_name="gold")
 def retail_revenue_by_demo_gold(context):
     retail_df = spark.read.parquet(f"{SILVER_PATH}/retail_silver")

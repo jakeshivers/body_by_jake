@@ -12,15 +12,13 @@ from dagster import (
                     AssetExecutionContext,
                     Output
                 )
-spark = get_spark("checkin_behavior_gold")
 
-
-@with_logger()
 @asset( group_name="gold")
 def checkin_behavior_gold(context):
-    df = spark.read.parquet(f"{SILVER_PATH}/checkins_silver")
+    spark = get_spark("checkin_behavior_gold")
+    
     logger = get_logger("checkin_behavior_gold")
-
+    df = spark.read.parquet(f"{SILVER_PATH}/checkins_silver")
     # 1 = Sunday, 7 = Saturday in Spark dayofweek
     enriched = (
         df.withColumn("day_of_week", dayofweek("checkin_date"))
@@ -45,5 +43,7 @@ def checkin_behavior_gold(context):
     )
 
     agg_df.write.mode("overwrite").parquet(f"{GOLD_PATH}/checkin_behavior")
+    logger.info(f"Wrote silver data to: {SILVER_PATH}/{action}")
+    
     get_success_path("gold", "checkin_behavior")
-    context.log.info("Wrote checkin_behavior gold model + _SUCCESS marker.")
+    logger.info("Wrote _SUCCESS marker")
