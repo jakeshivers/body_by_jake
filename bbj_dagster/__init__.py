@@ -1,38 +1,28 @@
-# bbj_dagster/__init__.py
+
 from dagster import Definitions
+
 from bbj_dagster.jobs.bronze_job import bronze_job
-from bbj_dagster.schedules.bronze_schedule import bronze_daily_schedule
-from bbj_dagster.assets.bronze.bronze_assets import (
-    members_bronze,
-    checkins_bronze,
-    facility_usage_bronze,
-    cancellations_bronze,
-    retail_bronze,
-)
-from bbj_dagster.assets.silver.checkins_silver import checkins_silver
 from bbj_dagster.jobs.silver_job import silver_job
+from bbj_dagster.jobs.gold_job import gold_job
+
+from bbj_dagster.schedules.bronze_schedule import bronze_daily_schedule
+
+# bronze
+from bbj_dagster.assets.bronze import assets as bronze_assets
+
+# silver
 from bbj_dagster.assets.silver import assets as silver_assets
-from bbj_dagster.assets.silver.cancellations_silver import cancellations_silver
 
+#gold
+from bbj_dagster.assets.gold import assets as gold_assets
 
+all_assets = bronze_assets + silver_assets + gold_assets
+
+for i, a in enumerate(all_assets):
+    print(f"[DEBUG] Asset {i}: {a} ({type(a)})")
 
 defs = Definitions(
-    assets=[
-        #bronze
-        members_bronze,
-        checkins_bronze,
-        facility_usage_bronze,
-        cancellations_bronze,
-        retail_bronze,
-
-        #silver
-        checkins_silver,
-        cancellations_silver,
-        *silver_assets,
-        
-
-        #gold
-    ],
-    jobs=[bronze_job, silver_job],
-    schedules=[bronze_daily_schedule],  #only have a bronze job for now. Silver should be a dependency 
-)
+        assets=all_assets,
+        jobs=[bronze_job, silver_job, gold_job],
+        schedules=[bronze_daily_schedule],  #only have a bronze job for now. Silver should be a dependency 
+ )

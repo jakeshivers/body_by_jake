@@ -13,11 +13,16 @@ def bronze_asset_op(spark, df, asset_name: str, partition_col: str):
 
     print(f"💾 Writing partitioned Delta to {target_path} on {partition_col}...")
     (
-        df.write.format("delta")
-        .mode("append")
-        .partitionBy(partition_col)
-        .option("mergeSchema", "true")
-        .save(target_path)
+        # df.write.format("delta")
+        # .mode("append")
+        # .partitionBy(partition_col)
+        # .option("mergeSchema", "true")
+        # .save(target_path)
+
+        df.write \
+        .mode("overwrite") \
+        .partitionBy(partition_col) \
+        .parquet(target_path)
     )
     print("✅ Delta write complete.")
 
