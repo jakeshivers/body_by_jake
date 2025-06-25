@@ -7,7 +7,7 @@ from src.spark_session import get_spark
 
 action = 'checkins'
 
-@asset(deps=[f"{action}_bronze", "members_silver"], group_name="silver")
+@asset(group_name="silver", deps=[f"{action}_bronze", "members_silver"])
 @with_logger()
 def checkins_silver():
     logger = get_logger(f"{action}_silver")

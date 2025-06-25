@@ -13,7 +13,7 @@ from dagster import (
                     Output
                 )
 
-@asset(partitions_def=DAILY_PARTITIONS, group_name="bronze")
+@asset(group_name="bronze", partitions_def=DAILY_PARTITIONS,)
 @with_logger()
 def checkins_bronze(context: AssetExecutionContext):
     spark = get_spark("checkins_bronze")

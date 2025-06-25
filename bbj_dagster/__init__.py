@@ -18,9 +18,6 @@ from bbj_dagster.assets.gold import assets as gold_assets
 
 all_assets = bronze_assets + silver_assets + gold_assets
 
-for i, a in enumerate(all_assets):
-    print(f"[DEBUG] Asset {i}: {a} ({type(a)})")
-
 defs = Definitions(
         assets=all_assets,
         jobs=[bronze_job, silver_job, gold_job],

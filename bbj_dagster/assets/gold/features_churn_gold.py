@@ -1,15 +1,20 @@
 from dagster import asset
 from pyspark.sql.functions import col, year, current_date, when
-from bbj_dagster.utils.logger import with_logger
+from bbj_dagster.utils.logger import with_logger, get_logger
 from bbj_dagster.config.constants import GOLD_PATH, SILVER_PATH, get_success_path
 from src.spark_session import get_spark
 
 spark = get_spark("features_churn_gold")
 action = 'features_churn'
 
-@asset( group_name="gold")
+@asset(group_name="gold",
+        deps=[
+            "members_silver",
+            "membership_retention_gold",
+            "checkin_behavior_gold"
+        ])
 def features_churn_gold(context):
-    members_df = spark.read.parquet(f"{SILVER_PATH}/members_silver")
+    members_df = spark.read.parquet(f"{SILVER_PATH}/members")
     retention_df = spark.read.parquet(f"{GOLD_PATH}/member_retention")
     checkin_df = spark.read.parquet(f"{GOLD_PATH}/checkin_behavior")
 
