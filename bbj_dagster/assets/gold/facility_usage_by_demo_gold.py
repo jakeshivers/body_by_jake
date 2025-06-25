@@ -1,14 +1,18 @@
 from dagster import asset
 from pyspark.sql.functions import col, year, current_date, when, count
-from bbj_dagster.utils.logger import with_logger
+from bbj_dagster.utils.logger import with_logger, get_logger
 from bbj_dagster.config.constants import SILVER_PATH, GOLD_PATH, get_success_path
 from src.spark_session import get_spark
 
 spark = get_spark("facility_usage_by_demo_gold")
 
-@asset(group_name="gold")
+@asset(group_name="gold", deps=[
+        "facility_usage_silver",
+        "members_silver"
+        ],
+    )
 def facility_usage_by_demo_gold(context):
-    usage_df = spark.read.parquet(f"{SILVER_PATH}/facility_usage_silver")
+    usage_df = spark.read.parquet(f"{SILVER_PATH}/facility_usage")
     members_df = spark.read.parquet(f"{SILVER_PATH}/members_silver")
     logger = get_logger("facility_usage_by_demo_gold")
 
@@ -28,4 +32,6 @@ def facility_usage_by_demo_gold(context):
 
     demo_summary.write.mode("overwrite").parquet(f"{GOLD_PATH}/facility_usage_by_demo")
     get_success_path("gold", "facility_usage_by_demo")
-    context.log.info("Wrote facility_usage_by_demo gold model + _SUCCESS marker.")
+
+    get_success_path("gold", "checkin_behavior")
+    logger.info("Wrote _SUCCESS marker")

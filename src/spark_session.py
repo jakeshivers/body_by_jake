@@ -2,7 +2,9 @@ from pyspark.sql import SparkSession
 
 def get_spark(app_name="BodyByJake"):
     builder = SparkSession.builder \
-        .appName("GenTest") \
+        .appName("BodyByJake") \
+        .config("spark.driver.memory","6g") \
+        .config("spark.sql.shuffle.partitions", "8") \
         .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
         .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
         .config("spark.jars", ",".join([

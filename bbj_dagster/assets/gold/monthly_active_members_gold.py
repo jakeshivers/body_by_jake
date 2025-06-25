@@ -2,13 +2,14 @@
 
 from dagster import asset
 from pyspark.sql.functions import col, countDistinct, month
-from bbj_dagster.utils.logger import with_logger
+from bbj_dagster.utils.logger import with_logger, get_logger
 from src.spark_session import get_spark
 from bbj_dagster.config.constants import SILVER_PATH, GOLD_PATH
 
 action = 'monthly_active_users'
 
-@asset(group_name="gold")
+@asset( group_name="gold", 
+        deps=["checkins_silver"])
 def monthly_active_members_gold() -> None:
     logger = get_logger(f"{action}_gold")
 
@@ -22,6 +23,6 @@ def monthly_active_members_gold() -> None:
         .agg(countDistinct("member_id").alias("monthly_active_members"))
     )
 
-    logger.info("Writing gold/monthly_active_members")
-    result.write.mode("overwrite").parquet(F"{GOLD_PATH}/monthly_active_members")
-    context.log.info("Wrote MAM_behavior gold model + _SUCCESS marker.")
+    df_checkins.write.mode("overwrite").parquet(f"{GOLD_PATH}/monthly_active_members")
+    get_success_path("gold", "monthly_active_members")
+    logger.info("Wrote monthly_active_members gold model + _SUCCESS marker.")
